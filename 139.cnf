@@ -1,0 +1,15 @@
+# max bytes you wish to read in from scanner
+$MAX = 1024; 
+
+# port number to listen on
+$port = 139;
+
+$sleepytime=1;
+
+# start valid proto  (the beginning of a valid protocol reply for this port)
+$startvalidproto = "\x0D\xFF\xFE\xFD\xFC\xFB\xFA\xF9|FUZZ|\x0D\xFF\xFE\xFD\xFC\xFB\xFA\xF9|FUZZ|\x0D\xFF\xFE\xFD\xFC\xFB\xFA\xF9|FUZZ|\x0D\xFF\xFE\xFD\xFC\xFB\xFA\xF9|FUZZ|\x0D\xFF\xFE\xFD\xFC\xFB\xFA\xF9|FUZZ|";
+
+# define the crap in here
+$crap .= "\&\|\%\A" x 200000;
+@goofy = ("\x00", "\x01", "\x02", "\x03", "\x04", "\x09", "\xff", "\x0a", "\x0b");
+
