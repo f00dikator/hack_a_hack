@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# John Lampe ... dmitry.chan@gmail.com 
+# John Lampe ... dmitry.chan@gmail.com , john.lampe@gmail.com
 
 $|=1;
 
@@ -17,14 +17,9 @@ $incfile = shift || die "Need the .cnf file\n";
 
 require("$incfile");
 
-# $startvalidproto should look kinda like
-# GET /|FUZZ|/.html HTTP/1.|FUZZ| garbage |FUZZ| more
-# 0            1                     2           3
+@fuzzrray = @startvalidproto;
 
-@fuzzrray = split(/\|FUZZ\|/,$startvalidproto);
 $req = calculate_req();
-#print "$req\n";		#remove
-#exit(0);		#remove
 
 if ($udp) {
     do_udp();
@@ -94,23 +89,23 @@ sub do_udp {
 
 
 sub calculate_req
-{
+{	
 	# if @goofy defined in cnf file, then use it
 	if ($#goofy <= 0)
 	{
-		@goofy = qw(< & ' " < >);
+		@goofy = qw(< & ' " >);
 	}
-
 	$index = $#goofy;
 	@timerray = localtime;
 	$seconds = @timerray[0];
 	$seconds++;
 	$entropy = $seconds * 3;
-	$myreq = $fuzzrray[0];
 	$mcount = 0;
 
-	for ($zztop=1; length($fuzzrray[$zztop]) > 1; $zztop++)
+	for ($zztop=0; length($fuzzrray[$zztop]) >= 1; $zztop++)
 	{
+            if ($fuzzrray[$zztop] =~ /FUZZ/)
+            {
 			$insert = "";
 			for ($ff=0; $ff < $entropy; $ff++)
 			{
@@ -119,8 +114,11 @@ sub calculate_req
 				$insert .= $goofy[($entropy + $mcount + $random) % $index ];
 				$mcount++;
 			}
-			$myreq = $myreq . $insert . $fuzzrray[$zztop];
+			$myreq = $myreq . $insert;
+            } else {
+                $myreq = $myreq . $fuzzrray[$zztop];
+            }
 	}
+
 	return ($myreq);
-	print "\$myreq is $myreq\n";
 }
